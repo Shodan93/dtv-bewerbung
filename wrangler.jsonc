@@ -1,0 +1,10 @@
+{
+  "name": "dtv-bewerbung",
+  "compatibility_date": "2026-09-01",
+  "assets": {
+    "directory": "./"
+  },
+  "routes": [
+    { "pattern": "dtv-bewerbung.mumelter.org", "custom_domain": true }
+  ]
+}
