@@ -81,7 +81,7 @@
       </div>
       <div style="{{ heroTextStyle }}">
         <p style="{{ heroKickerStyle }}">Bewerbung als Projektmanagerin Website &amp; Shop</p>
-        <h1 style="{{ h1Style }}">EIN SHOP. FÜNF JAHRE. <span style="{{ h1AccentStyle }}">EIN NEUES KAPITEL.</span></h1>
+        <h1 style="{{ h1Style }}">HANDEL. E&#8209;COMMERCE. PROJEKTMANAGEMENT. <span style="{{ h1AccentStyle }}">DAS NÄCHSTE KAPITEL:&nbsp;DTV.</span></h1>
         <p style="{{ heroLeadStyle }}">Auf dieser Seite zeige ich Ihnen, wie ich arbeite, mit einem Video meines ehemaligen Onlineshops und einer Case Study aus meiner Weiterbildung.</p>
       </div>
     </header>
@@ -322,12 +322,12 @@ class Component extends DCLogic {
       },
       heroTopRightStyle: { display: m ? "none" : "flex", justifyContent: "flex-end" },
       headerBtnStyle: Object.assign({}, tile, { height: 40, padding: "0 24px", fontSize: 13.5 }),
-      heroTextStyle: { display: "flex", flexDirection: "column", gap: m ? 14 : 20, maxWidth: 1200 },
+      heroTextStyle: { display: "flex", flexDirection: "column", gap: m ? 14 : 20 },
       heroKickerStyle: Object.assign({}, label, { fontSize: m ? 13 : 15, margin: 0 }),
       /* banner-style headline (bold uppercase sans, second line in dtv blue) */
       h1Style: {
         fontFamily: "var(--font-headline)", fontWeight: 700,
-        fontSize: m ? "calc((100vw - 48px) / 13)" : "min(64px, calc((100vw - 144px) / 15))", /* mobile: "EIN SHOP. FÜNF JAHRE." stays on one line */
+        fontSize: m ? "calc((100vw - 48px) / 13)" : "min(54px, calc((100vw - 144px) / 24))", /* desktop: the long first line stays on one line */
         lineHeight: 1.06, letterSpacing: "0.005em", textTransform: "uppercase",
         color: strong, margin: 0,
       },
