@@ -90,7 +90,7 @@
 
     <header style="{{ heroStyle }}">
       <div style="{{ heroTopRowStyle }}">
-        <nav aria-label="Inhalt" class="toc" style="{{ navStyle }}"><a href="#ueber-mich">Über mich</a><a href="#ansatz">Ansatz</a><a href="#ai-projekte">AI-Projekte</a><a href="#royalshrimp">Cases</a></nav>
+        <nav aria-label="Inhalt" class="toc" style="{{ navStyle }}"><a href="#ueber-mich">Über mich</a><a href="#ansatz">Ansatz</a><a href="#ai-projekte">KI-Projekte</a><a href="#royalshrimp">Cases</a></nav>
         <span style="{{ heroLogoStyle }}">Svenja Mumelter</span>
         <div style="{{ heroTopRightStyle }}"><a href="#kontakt" class="btn-tile" style="{{ headerBtnStyle }}">Kontakt</a></div>
       </div>
@@ -164,7 +164,7 @@
   <section id="ai-projekte" aria-labelledby="ai-title" style="{{ aiStyle }}">
     <div style="{{ skillsHeadStyle }}">
       <span style="{{ sectionLabelStyle }}">Eigene Projekte</span>
-      <h2 id="ai-title" style="{{ introH2Style }}">Ein paar meiner <span style="{{ h2AccentStyle }}">AI-Projekte.</span></h2>
+      <h2 id="ai-title" style="{{ introH2Style }}">Meine <span style="{{ h2InlineAccentStyle }}">KI-Projekte.</span></h2>
       <p style="{{ approachLeadStyle }}">Neue Ideen habe ich fast jede Woche. Diese hier habe ich umgesetzt, alle selbst gebaut per Vibe Coding.</p>
     </div>
     <div style="{{ aiWrapStyle }}">
@@ -779,6 +779,7 @@ class Component extends DCLogic {
         lineHeight: 1.12, color: strong, margin: 0, maxWidth: 1240,
       },
       h2AccentStyle: { display: "block", color: accent },
+      h2InlineAccentStyle: { color: accent }, /* one-line headline, second word in dtv blue */
       approachLeadStyle: {
         fontFamily: body, fontWeight: 300, fontSize: m ? 17 : 18.5, lineHeight: 1.6,
         color: strong, margin: m ? "4px 0 0 0" : "6px 0 0 0", maxWidth: 1296,
