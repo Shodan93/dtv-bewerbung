@@ -168,6 +168,7 @@
       <p style="{{ approachLeadStyle }}">Neue Ideen habe ich fast jede Woche. Diese hier habe ich umgesetzt, alle selbst gebaut per Vibe Coding.</p>
     </div>
     <div style="{{ aiWrapStyle }}">
+      <div style="{{ aiBgStyle }}" aria-hidden="true"></div>
       <div style="{{ aiStackStyle }}">
         <!-- Teil 1: three big project cards, each opens its own gallery -->
         <ul style="{{ projGridStyle }}">
@@ -709,6 +710,17 @@ class Component extends DCLogic {
         padding: m ? "56px 24px 8px 24px" : "104px 72px 24px 72px", /* sits between the grey "Mein Ansatz" band and Case 01 (which brings its own 88 / 56px on top) */
       },
       aiWrapStyle: { position: "relative", width: "100%" },
+      /* faded square grid + very soft dtv-blue glow behind the cards (taken over from the Kijimea page, recoloured);
+         second mask: the grid stops exactly at the bottom edge of the last tiles, so Case 01 below stays clean */
+      aiBgStyle: {
+        position: "absolute", inset: m ? "-40px -24px" : "-120px -72px -112px -72px", zIndex: 0, pointerEvents: "none",
+        backgroundImage: "linear-gradient(#dde3e7 2px, transparent 2px), linear-gradient(90deg, #dde3e7 2px, transparent 2px), radial-gradient(ellipse at center, rgba(31,106,149,0.10) 0%, rgba(31,106,149,0.04) 40%, rgba(255,255,255,0) 72%)",
+        backgroundSize: (m ? "72px 72px, 72px 72px" : "112px 112px, 112px 112px") + ", 100% 100%",
+        backgroundPosition: "center",
+        WebkitMaskImage: "radial-gradient(ellipse at center, #000 45%, transparent 82%), linear-gradient(to bottom, #000 calc(100% - " + (m ? 64 : 136) + "px), transparent calc(100% - " + (m ? 40 : 112) + "px))",
+        maskImage: "radial-gradient(ellipse at center, #000 45%, transparent 82%), linear-gradient(to bottom, #000 calc(100% - " + (m ? 64 : 136) + "px), transparent calc(100% - " + (m ? 40 : 112) + "px))",
+        WebkitMaskComposite: "source-in", maskComposite: "intersect",
+      },
       aiStackStyle: { position: "relative", zIndex: 1, display: "flex", flexDirection: "column", gap: m ? 14 : 24, width: "100%" },
       projGridStyle: m
         ? { listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 14 }
