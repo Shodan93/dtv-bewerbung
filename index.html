@@ -162,7 +162,7 @@
   </div>
 
   <section id="ai-projekte" aria-labelledby="ai-title" style="{{ aiStyle }}">
-    <div style="{{ skillsHeadStyle }}">
+    <div id="arbeitsproben" style="{{ skillsHeadStyle }}"><!-- anchor for links in follow-up mails: /#arbeitsproben lands on the section label -->
       <span style="{{ sectionLabelStyle }}">Eigene Projekte</span>
       <h2 id="ai-title" style="{{ introH2Style }}">Meine <span style="{{ h2InlineAccentStyle }}">KI-Projekte.</span></h2>
       <p style="{{ approachLeadStyle }}">Neue Ideen habe ich fast jede Woche. Diese hier habe ich umgesetzt, alle selbst gebaut per Vibe Coding.</p>
@@ -336,6 +336,14 @@ class Component extends DCLogic {
       if (m !== this.state.isMobile) this.setState({ isMobile: m });
     };
     window.addEventListener("resize", this._onResize);
+    /* deep links (e.g. /#arbeitsproben from a mail): the page is rendered by script, so the browser's own jump to the
+       anchor happens before the target exists; jump once the page is built and again after the web fonts have loaded */
+    const hash = decodeURIComponent((window.location.hash || "").slice(1));
+    if (hash) {
+      const go = () => { const el = document.getElementById(hash); if (el) el.scrollIntoView({ block: "start", behavior: "instant" }); };
+      requestAnimationFrame(go);
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => setTimeout(go, 60));
+    }
     /* gallery: arrow keys, swipe (one finger, page not pinch-zoomed), native close (Esc) syncs the state */
     this._onKey = (e) => {
       if (!this.state.gallery) return;
