@@ -67,6 +67,21 @@
     .util-link:hover { color: var(--accent-blue) !important; }
     .util-link:focus-visible { outline: 2px solid var(--ink-900); outline-offset: 3px; }
     .video-tile:focus-visible { outline: 3px solid var(--ink-900); outline-offset: 3px; }
+    /* AI project cards (same block as the Kijimea page, restyled for dtv): the whole card is one button (stretched ::after);
+       hover = instant dtv-blue border, hint underlined; square corners like all dtv tiles */
+    .ai-card-click:hover { border-color: var(--accent-blue) !important; }
+    .ai-card-click:hover .ai-card-hint { text-decoration: underline; text-decoration-color: var(--accent-blue); text-underline-offset: 4px; }
+    .card-stretch::after { content: ""; position: absolute; inset: 0; z-index: 2; } /* above the positioned bullets/preview, so a click anywhere on the card opens it */
+    .card-stretch:focus-visible { outline: none; }
+    .card-stretch:focus-visible::after { outline: 3px solid var(--ink-900); outline-offset: 3px; }
+    /* big project cards: one-liner and bullets stay on one line on desktop; on narrower desktops the size steps down (text unchanged) */
+    @media (min-width: 860px) and (max-width: 1459px) { .proj-oneliner { font-size: 16px !important; } }
+    @media (min-width: 860px) and (max-width: 1389px) { .proj-oneliner { font-size: 15px !important; } .proj-bullets li, .more-text { font-size: 14px !important; } }
+    .proj-bullets li::before { content: ""; position: absolute; left: 0; top: 0.62em; width: 6px; height: 6px; background: var(--accent-blue); } /* square dtv bullet */
+    /* project overlay: dimmed page, square buttons swap to dtv blue instantly */
+    #proj-dialog::backdrop { background: rgba(20, 20, 20, 0.82); }
+    .dialog-close:hover, .dialog-close:focus-visible, .dlg-arrow:hover, .dlg-arrow:focus-visible { background-color: var(--accent-blue) !important; color: #ffffff !important; }
+    .dialog-close:focus-visible, .dlg-arrow:focus-visible, .dlg-dot:focus-visible { outline: 2px solid #ffffff; outline-offset: 2px; }
   </style>
 </helmet>
 <div style="{{ pageStyle }}">
@@ -75,7 +90,7 @@
 
     <header style="{{ heroStyle }}">
       <div style="{{ heroTopRowStyle }}">
-        <nav aria-label="Inhalt" class="toc" style="{{ navStyle }}"><a href="#ueber-mich">Über mich</a><a href="#ansatz">Ansatz</a><a href="#royalshrimp">Cases</a></nav>
+        <nav aria-label="Inhalt" class="toc" style="{{ navStyle }}"><a href="#ueber-mich">Über mich</a><a href="#ansatz">Ansatz</a><a href="#ai-projekte">AI-Projekte</a><a href="#royalshrimp">Cases</a></nav>
         <span style="{{ heroLogoStyle }}">Svenja Mumelter</span>
         <div style="{{ heroTopRightStyle }}"><a href="#kontakt" class="btn-tile" style="{{ headerBtnStyle }}">Kontakt</a></div>
       </div>
@@ -145,6 +160,86 @@
     </section>
 
   </div>
+
+  <section id="ai-projekte" aria-labelledby="ai-title" style="{{ aiStyle }}">
+    <div style="{{ skillsHeadStyle }}">
+      <span style="{{ sectionLabelStyle }}">Eigene Projekte</span>
+      <h2 id="ai-title" style="{{ introH2Style }}">Ein paar meiner <span style="{{ h2AccentStyle }}">AI-Projekte.</span></h2>
+      <p style="{{ approachLeadStyle }}">Neue Ideen habe ich fast jede Woche. Diese hier habe ich umgesetzt, alle selbst gebaut per Vibe Coding.</p>
+    </div>
+    <div style="{{ aiWrapStyle }}">
+      <div style="{{ aiStackStyle }}">
+        <!-- Teil 1: three big project cards, each opens its own gallery -->
+        <ul style="{{ projGridStyle }}">
+          <sc-for list="{{ bigProjects }}" as="p">
+            <li class="{{ p.cls }}" style="{{ p.cardStyle }}">
+              <sc-if value="{{ p.ready }}"><div style="{{ projPreviewStyle }}"><img src="{{ p.preview }}" alt="" loading="lazy" decoding="async" style="{{ p.previewImgStyle }}" /></div></sc-if>
+              <div style="{{ projBodyStyle }}">
+                <h3 style="{{ projTitleStyle }}"><sc-if value="{{ p.ready }}"><button type="button" class="card-stretch" aria-haspopup="dialog" onClick="{{ p.open }}" style="{{ cardStretchBtnStyle }}">{{ p.title }}</button></sc-if><sc-if value="{{ !p.ready }}">{{ p.title }}</sc-if></h3>
+                <p class="proj-oneliner" style="{{ projOneLinerStyle }}">{{ p.oneliner }}</p>
+                <ul class="proj-bullets" style="{{ projBulletsStyle }}"><sc-for list="{{ p.bullets }}" as="b"><li style="{{ projBulletStyle }}">{{ b }}</li></sc-for></ul>
+                <sc-if value="{{ p.ready }}"><span class="ai-card-hint" aria-hidden="true" style="{{ aiHintStyle }}">Screenshots ansehen</span></sc-if>
+              </div>
+            </li>
+          </sc-for>
+        </ul>
+
+        <!-- Teil 2: Orbit + Keyboard, two identically built cards side by side (stacked on mobile) -->
+        <ul style="{{ duoGridStyle }}">
+          <sc-for list="{{ duoProjects }}" as="q">
+            <li class="ai-card-click" style="{{ duoCardStyle }}">
+              <div style="{{ duoPreviewStyle }}"><img src="{{ q.preview }}" alt="" loading="lazy" decoding="async" style="{{ q.previewImgStyle }}" /></div>
+              <div style="{{ projBodyStyle }}">
+                <h3 style="{{ projTitleStyle }}"><button type="button" class="card-stretch" aria-haspopup="dialog" onClick="{{ q.open }}" style="{{ cardStretchBtnStyle }}">{{ q.title }}</button></h3>
+                <p style="{{ projOneLinerStyle }}">{{ q.p1 }}</p>
+                <p style="{{ duoNoteStyle }}">{{ q.p2 }}</p>
+                <span class="ai-card-hint" aria-hidden="true" style="{{ aiHintStyle }}">{{ q.hint }}</span>
+              </div>
+            </li>
+          </sc-for>
+        </ul>
+
+        <!-- Teil 3: compact tiles, no overlay -->
+        <div style="{{ moreWrapStyle }}">
+          <h3 style="{{ moreHeadStyle }}">Außerdem gebaut</h3>
+          <ul style="{{ moreGridStyle }}">
+            <sc-for list="{{ moreProjects }}" as="x">
+              <li style="{{ x.cardStyle }}">
+                <h4 style="{{ x.titleStyle }}">{{ x.title }}</h4>
+                <p class="more-text" style="{{ x.textStyle }}">{{ x.text }}</p>
+              </li>
+            </sc-for>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- one overlay for all projects: native <dialog> (Esc, focus trap); gallery nav only when a project has several images -->
+    <dialog id="proj-dialog" aria-labelledby="proj-dialog-title" onClick="{{ onDialogBackdrop }}" style="{{ dlgStyle }}">
+      <div style="{{ dlgBarStyle }}">
+        <p id="proj-dialog-title" style="{{ dlgTitleStyle }}">{{ dlgTitle }} <span style="{{ dlgCountStyle }}">{{ dlgCount }}</span></p>
+        <button type="button" class="dialog-close" aria-label="Schließen" onClick="{{ closeGallery }}" style="{{ dlgCloseStyle }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+      </div>
+      <div id="proj-stage" style="{{ dlgStageStyle }}">
+        <sc-if value="{{ dlgMulti }}"><button type="button" class="dlg-arrow" aria-label="Vorheriges Bild" onClick="{{ prevSlide }}" style="{{ dlgArrowStyle }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></button></sc-if>
+        <div style="{{ dlgFrameAreaStyle }}">
+          <sc-if value="{{ dlgOpen }}">
+            <div style="{{ slide.frameStyle }}">
+              <sc-if value="{{ slide.isBrowser }}"><div style="{{ browserBarStyle }}" aria-hidden="true"><span style="{{ browserDotStyle }}"></span><span style="{{ browserDotStyle }}"></span><span style="{{ browserDotStyle }}"></span></div></sc-if>
+              <img src="{{ slide.src }}" alt="{{ slide.alt }}" decoding="async" style="{{ slide.imgStyle }}" />
+            </div>
+          </sc-if>
+        </div>
+        <sc-if value="{{ dlgMulti }}"><button type="button" class="dlg-arrow" aria-label="Nächstes Bild" onClick="{{ nextSlide }}" style="{{ dlgArrowStyle }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"></path></svg></button></sc-if>
+      </div>
+      <p style="{{ dlgCaptionStyle }}" aria-live="polite">{{ slide.caption }}</p>
+      <sc-if value="{{ dlgMulti }}">
+        <div style="{{ dotsStyle }}">
+          <sc-for list="{{ dots }}" as="d"><button type="button" class="dlg-dot" aria-label="{{ d.label }}" aria-current="{{ d.current }}" onClick="{{ d.go }}" style="{{ dotBtnStyle }}"><span style="{{ d.dotStyle }}"></span></button></sc-for>
+        </div>
+      </sc-if>
+    </dialog>
+  </section>
 
   <div id="royalshrimp" style="{{ case1Style }}">
     <div style="{{ headerStyle }}">
@@ -232,6 +327,7 @@ class Component extends DCLogic {
   state = {
     isMobile: typeof window !== "undefined" ? window.innerWidth <= 859 : false,
     copied1: false,
+    gallery: null, /* { k: project key, i: slide index } while the overlay is open */
   };
 
   componentDidMount() {
@@ -240,9 +336,33 @@ class Component extends DCLogic {
       if (m !== this.state.isMobile) this.setState({ isMobile: m });
     };
     window.addEventListener("resize", this._onResize);
+    /* gallery: arrow keys, swipe (one finger, page not pinch-zoomed), native close (Esc) syncs the state */
+    this._onKey = (e) => {
+      if (!this.state.gallery) return;
+      if (e.key === "ArrowLeft") { e.preventDefault(); this.prevSlide(); }
+      if (e.key === "ArrowRight") { e.preventDefault(); this.nextSlide(); }
+    };
+    document.addEventListener("keydown", this._onKey);
+    const dlg = document.getElementById("proj-dialog");
+    const stage = document.getElementById("proj-stage");
+    /* ignore a late "close" from an earlier session if the dialog is already open again */
+    this._onClose = () => { if (this.state.gallery && !(dlg && dlg.open)) this.setState({ gallery: null }); };
+    if (dlg) dlg.addEventListener("close", this._onClose);
+    this._onTouchStart = (e) => { this._tx = e.touches.length === 1 ? e.touches[0].clientX : null; };
+    this._onTouchEnd = (e) => {
+      if (this._tx == null || (window.visualViewport && window.visualViewport.scale > 1.05)) return;
+      const dx = e.changedTouches[0].clientX - this._tx;
+      this._tx = null;
+      if (Math.abs(dx) > 45) (dx < 0 ? this.nextSlide : this.prevSlide)();
+    };
+    if (stage) {
+      stage.addEventListener("touchstart", this._onTouchStart, { passive: true });
+      stage.addEventListener("touchend", this._onTouchEnd, { passive: true });
+    }
   }
   componentWillUnmount() {
     window.removeEventListener("resize", this._onResize);
+    document.removeEventListener("keydown", this._onKey);
   }
 
   copyLink1 = () => {
@@ -251,6 +371,120 @@ class Component extends DCLogic {
     this.setState({ copied1: true });
     clearTimeout(this._t1);
     this._t1 = setTimeout(() => this.setState({ copied1: false }), 1600);
+  };
+
+  /* project data for the AI section. Images: assets/projekte/<key>-<n>.webp (same files as on the Kijimea page).
+     frame = "phone" (smartphone frame), "browser" (browser frame) or "plain" (square image, no frame).
+     ready: false = card shows text only (no preview, not clickable) until the real screenshots are in */
+  projects = {
+    ausgaben: {
+      ready: true,
+      preview: 3, /* card preview = the form screenshot, gallery still starts at 1 */
+      title: "Ausgaben-App mit AI-Bon-Erfassung",
+      oneliner: "Vom Kassenbon zur Ausgabe, automatisch.",
+      bullets: [
+        "REWE schickt den Kassenbon per E-Mail.",
+        "n8n auf unserem Pi liest ihn mit AI aus.",
+        "Artikel und Beträge landen in unserer App.",
+      ],
+      slides: [
+        { frame: "phone", caption: "Übersicht mit den letzten Buchungen, der REWE-Einkauf kam automatisch über den Kassenbon.",
+          alt: "Ausgaben-App, Startseite: Saldo und Liste der letzten Buchungen, oben ein REWE-Einkauf." },
+        { frame: "browser", caption: "Der n8n-Workflow: Bon-Mail abholen, PDF auslesen, Ausgabe anlegen und per Telegram Bescheid geben.",
+          alt: "n8n-Workflow: Outlook-Trigger, Mail abrufen, PDF-Text extrahieren, REWE-Bon auslesen, Ausgabe anlegen, Prüfung mit Erfolgs- und Fehlermeldung per Telegram." },
+        { frame: "phone", caption: "Ausgaben lassen sich auch von Hand erfassen, mit Aufteilung, wer bezahlt hat und für wen.",
+          alt: "Ausgaben-App, Formular „Neue Ausgabe“ mit Beschreibung, Betrag, Datum, bezahlt von und für." },
+        { frame: "plain", caption: "Als eigene App auf dem Homescreen.",
+          alt: "App-Icon „Ausgaben“: grünes Geldbündel mit Euro-Zeichen." },
+      ],
+    },
+    wander: {
+      ready: true,
+      title: "Wander- und Reise-App",
+      oneliner: "Touren und Reisen festhalten und teilen.",
+      bullets: [
+        "Route aus GPX-Datei direkt auf der Karte.",
+        "Fotos landen automatisch bei der Tour.",
+        "Teilen per Link, mit Ablauf und Passwort.",
+      ],
+      slides: [
+        { frame: "phone", caption: "Tourenübersicht mit Fotos, Schwierigkeit, Strecke, Höhenmetern und Gehzeit.",
+          alt: "Wander-App, Tourenliste: Isarwanderung Höllriegelskreuth – Schäftlarn mit Foto, 13,2 km, 183 hm, 4:52 h." },
+        { frame: "phone", caption: "Die Route aus der GPX-Datei auf der Karte, darunter das Höhenprofil.",
+          alt: "Wander-App, Karte mit rot eingezeichneter Rundtour in Südtirol und Höhenprofil darunter." },
+        { frame: "phone", caption: "Jede Tour bekommt eine eigene Seite mit Titelbild, Beschreibung und Kennzahlen.",
+          alt: "Wander-App, Tourseite „Hammerwand und Bärenfalle“ mit Bergfoto, Beschreibung, Strecke und Aufstieg." },
+        { frame: "phone", caption: "Teilen per Link, mit Passwort und frei wählbarer Gültigkeit.",
+          alt: "Wander-App, Dialog „Teilen“ mit Passwortfeld und Gültigkeit von 7, 30 oder 90 Tagen." },
+      ],
+    },
+    fitness: {
+      ready: true,
+      title: "Fitness-App mit AI-Steuerung",
+      oneliner: "Training und Ernährung, gesteuert per Chat.",
+      bullets: [
+        "Mahlzeit per Chat, MCP trägt Kalorien ein.",
+        "Trainingsplan zeigt, wann ich steigern kann.",
+        "Gewichtsverlauf als Kurve über Monate.",
+      ],
+      slides: [
+        { frame: "phone", caption: "Startseite mit dem heutigen Training, Wochenziel und Hinweisen wie einer empfohlenen Deload-Woche.",
+          alt: "Fitness-App, Startseite „Servus, Svenja“ mit dem heutigen Ganzkörpertraining und dem Button „Training starten“." },
+        { frame: "phone", caption: "Im Training: Gewicht und Wiederholungen pro Satz, die App zeigt, wann ich steigern kann.",
+          alt: "Fitness-App während des Trainings: Übung Chest-Supported Row mit Sätzen, Gewicht, Wiederholungen und Pausen-Timer." },
+        { frame: "phone", caption: "Kalorienbedarf und Ziel, berechnet aus Alltag und Training.",
+          alt: "Fitness-App, Kalorien: Gesamtumsatz, Ziel „Halten“ und Protein-Empfehlung." },
+        { frame: "phone", caption: "Statistik: Sätze pro Woche und Verteilung nach Muskelgruppe.",
+          alt: "Fitness-App, Statistik mit Balkendiagramm der Sätze pro Woche und Ringdiagramm nach Muskelgruppe." },
+      ],
+    },
+    keyboard: {
+      title: "Keyboard",
+      slides: [
+        { frame: "browser", caption: "Übungsansicht mit Split-Keyboard: Neue Buchstaben kommen erst dazu, wenn die bisherigen sitzen.",
+          alt: "Keyboard-Trainer, Übungsansicht: Textzeile zum Abtippen über einer eingeblendeten geteilten Tastatur, der aktuelle Buchstabe ist hervorgehoben." },
+        { frame: "browser", caption: "Claude analysiert die bisherigen Läufe und stellt daraus die Einheit des Tages zusammen.",
+          alt: "Keyboard-Trainer, Ansicht „Die Einheit“: drei nummerierte Übungsblöcke mit Begründung und Ziel, darunter „Wohin das führt“." },
+      ],
+    },
+    orbit: {
+      title: "Orbit",
+      slides: [
+        { frame: "browser", src: "assets/projekte/orbit-1.webp",
+          alt: "Screenshot von Orbit: Kanban-Board mit den Spalten Themenspeicher, To-do, In Arbeit, Review und Erledigt, jede Karte mit Fälligkeit, Checkliste und Kategorie.",
+          caption: "Projekt „Spaceship“ in Orbit: alle Aufgaben für mein Alltags-Dashboard, vom Themenspeicher bis Erledigt, jede Karte mit Fälligkeit, Checkliste und Kategorie." },
+      ],
+    },
+  };
+  slidesOf = (k) => {
+    const pr = this.projects[k];
+    return pr.slides.map((sl, i) => Object.assign({
+      src: "assets/projekte/" + k + "-" + (i + 1) + ".webp",
+      alt: pr.title + ", Screenshot " + (i + 1) + " von " + pr.slides.length,
+    }, sl));
+  };
+
+  openGallery = (k) => {
+    this.setState({ gallery: { k: k, i: 0 } });
+    const d = document.getElementById("proj-dialog");
+    if (d && d.showModal && !d.open) d.showModal();
+  };
+  closeGallery = () => {
+    const d = document.getElementById("proj-dialog");
+    if (d && d.open) d.close();
+    this.setState({ gallery: null });
+  };
+  stepSlide = (dir) => {
+    const g = this.state.gallery;
+    if (!g) return;
+    const n = this.projects[g.k].slides.length;
+    this.setState({ gallery: { k: g.k, i: (g.i + dir + n) % n } });
+  };
+  prevSlide = () => this.stepSlide(-1);
+  nextSlide = () => this.stepSlide(1);
+  /* a click on the dimmed area (= the dialog element itself, outside its content) closes it */
+  onDialogBackdrop = (e) => {
+    if (e && e.target === e.currentTarget) this.closeGallery();
   };
 
   renderVals() {
@@ -280,7 +514,83 @@ class Component extends DCLogic {
       color: bodyText,
     };
 
+    /* ---- AI section data (same projects as the Kijimea page) ---- */
+    const stageH = m ? "min(62vh, 560px)" : "min(68vh, 740px)";
+    /* card preview: first image "peeks" in from below on the light dtv surface (phone centred, browser offset to the right) */
+    const previewPeek = (frame) => frame === "phone"
+      ? { position: "absolute", top: 22, left: "50%", transform: "translateX(-50%)", width: "50%", height: "auto", display: "block",
+          borderRadius: "14px 14px 0 0", border: "1px solid #d6dde2", borderBottom: 0 }
+      : { position: "absolute", top: 22, left: 24, width: "calc(100% - 24px)", height: "calc(100% - 22px)", display: "block",
+          objectFit: "cover", objectPosition: "left top", border: "1px solid #d6dde2", borderRight: 0, borderBottom: 0 };
+    const cardBase = {
+      position: "relative", display: "flex", flexDirection: "column", minWidth: 0, overflow: "hidden", cursor: "pointer",
+      backgroundColor: "var(--white)", border: "1px solid var(--border-subtle)",
+    };
+    const bigProjects = ["fitness", "wander", "ausgaben"].map((k) => {
+      const pr = this.projects[k];
+      return {
+        key: k, title: pr.title, oneliner: pr.oneliner, bullets: pr.bullets,
+        preview: "assets/projekte/" + k + "-" + (pr.preview || 1) + ".webp", previewImgStyle: previewPeek(pr.slides[(pr.preview || 1) - 1].frame),
+        open: () => this.openGallery(k),
+        ready: !!pr.ready, cls: pr.ready ? "ai-card-click" : "",
+        cardStyle: pr.ready ? cardBase : Object.assign({}, cardBase, { cursor: "default" }),
+      };
+    });
+    const tileBox = { display: "flex", flexDirection: "column", gap: 6, minWidth: 0, padding: m ? "18px 20px 20px 20px" : "20px 24px 22px 24px" };
+    const tileTitle = { fontFamily: body, fontWeight: 500, fontSize: m ? 16 : 16.5, lineHeight: 1.3, color: strong, margin: 0 };
+    const tileText = { fontFamily: body, fontWeight: 300, fontSize: m ? 15 : 15.5, lineHeight: 1.55, color: strong, margin: 0 };
+    /* Orbit + Keyboard: same card build, landscape preview centred with an even margin on all four sides */
+    const duoInset = m ? 16 : 22;
+    const duoPeek = { position: "absolute", top: duoInset, left: duoInset, width: "calc(100% - " + 2 * duoInset + "px)", height: "calc(100% - " + 2 * duoInset + "px)",
+      display: "block", boxSizing: "border-box", objectFit: "cover", objectPosition: "left top", border: "1px solid #d6dde2" };
+    const duoProjects = [
+      { title: "Orbit", preview: "assets/projekte/orbit-1.webp", hint: "Screenshot ansehen", open: () => this.openGallery("orbit"),
+        p1: "Selbst gebautes Projektmanagement-Tool, per MCP mit Claude verbunden.",
+        p2: "Der Screenshot zeigt mein aktuelles Projekt „Spaceship“: ein Alltags-Dashboard, das Aufgaben, Kalender und Finanzen an einem Ort bündeln soll." },
+      { title: "Keyboard", preview: "assets/projekte/keyboard-1.webp", hint: "Screenshots ansehen", open: () => this.openGallery("keyboard"),
+        p1: "Eigener 10-Finger-Trainer für mein Split-Keyboard, mit Claude als Coach.",
+        p2: "Claude wertet Fehlerquoten und Tempo je Finger aus und stellt daraus jeden Tag die passende Einheit mit Begründung und Ziel zusammen." },
+    ].map((q) => Object.assign(q, { previewImgStyle: duoPeek }));
+    const more = [
+      ["Zeiterfassung per MCP", "Eigener MCP-Server für Toggl: per Sprache in Codex erfasst, Kalender inklusive."],
+      ["Paperless mit AI", "Dokumentenmanagement auf dem Pi, AI benennt und verschlagwortet Dokumente automatisch."],
+      ["Lern-App zur Prüfungsvorbereitung", "Alle Unterlagen meiner Weiterbildungsmodule in einer eigenen App zum Lernen."],
+      ["Smart-Home-Automationen", "Licht, Musik und Saugroboter laufen automatisch, die Lichtfarbe ändere ich per Claude."],
+    ];
+    const moreProjects = more.map(([t, x]) => ({
+      title: t, text: x,
+      cardStyle: Object.assign({}, tileBox, { backgroundColor: "var(--white)", border: "1px solid var(--border-subtle)" }),
+      titleStyle: tileTitle, textStyle: tileText,
+    }));
+    /* overlay */
+    const g = this.state.gallery;
+    const gSlides = g ? this.slidesOf(g.k) : [];
+    const cur = g ? gSlides[g.i] : null;
+    const slide = cur ? {
+      src: cur.src, alt: cur.alt, caption: cur.caption, isBrowser: cur.frame === "browser",
+      frameStyle: cur.frame === "plain"
+        ? { display: "block", maxWidth: "100%" }
+        : cur.frame === "phone"
+        ? { display: "block", padding: m ? 6 : 8, borderRadius: m ? 30 : 38, backgroundColor: "#111111", border: "1px solid rgba(255,255,255,0.22)", maxWidth: "100%" }
+        : { display: "block", overflow: "hidden", backgroundColor: "#f3f6f7", border: "1px solid rgba(255,255,255,0.22)", maxWidth: "100%" },
+      imgStyle: cur.frame === "plain"
+        ? { display: "block", width: "auto", height: "auto", maxWidth: "100%", maxHeight: "calc(" + stageH + " - 40px)", borderRadius: 22 }
+        : cur.frame === "phone"
+        ? { display: "block", height: "calc(" + stageH + " - " + (m ? 14 : 18) + "px)", width: "auto", maxWidth: "100%", borderRadius: m ? 24 : 30 }
+        : { display: "block", width: "auto", height: "auto", maxWidth: "100%", maxHeight: "calc(" + stageH + " - 32px)" },
+    } : { src: "", alt: "", caption: "", isBrowser: false, frameStyle: {}, imgStyle: {} };
+    const dots = gSlides.map((sl, i) => ({
+      label: "Bild " + (i + 1) + " von " + gSlides.length, current: i === g.i ? "true" : "false",
+      go: () => this.setState({ gallery: { k: g.k, i: i } }),
+      dotStyle: { display: "block", width: 9, height: 9, backgroundColor: i === g.i ? "#ffffff" : "rgba(255,255,255,0.38)" },
+    }));
+
     return {
+      bigProjects: bigProjects, duoProjects: duoProjects, moreProjects: moreProjects, slide: slide, dots: dots,
+      dlgOpen: !!g, dlgMulti: gSlides.length > 1,
+      dlgTitle: g ? this.projects[g.k].title : "", dlgCount: gSlides.length > 1 ? (g.i + 1) + " / " + gSlides.length : "",
+      closeGallery: this.closeGallery, onDialogBackdrop: this.onDialogBackdrop,
+      prevSlide: this.prevSlide, nextSlide: this.nextSlide,
       copyLabel1: this.state.copied1 ? "Link kopiert ✓" : "Link kopieren",
       copyLink1: this.copyLink1,
 
@@ -390,6 +700,69 @@ class Component extends DCLogic {
         fontFamily: body, fontWeight: 400, fontSize: m ? 15 : 15.5, lineHeight: 1.45,
         color: muted, margin: 0,
       },
+
+      /* AI projects (block taken over from the Kijimea page), placed directly above Case 01: label + Georgia headline (second line dtv blue) + lead,
+         three big gallery cards, Orbit + Keyboard side by side, four compact "Außerdem gebaut" tiles; square white tiles with a hairline border */
+      aiStyle: {
+        position: "relative", zIndex: 1, backgroundColor: paper,
+        display: "flex", flexDirection: "column", gap: m ? 28 : 48,
+        padding: m ? "56px 24px 8px 24px" : "104px 72px 24px 72px", /* sits between the grey "Mein Ansatz" band and Case 01 (which brings its own 88 / 56px on top) */
+      },
+      aiWrapStyle: { position: "relative", width: "100%" },
+      aiStackStyle: { position: "relative", zIndex: 1, display: "flex", flexDirection: "column", gap: m ? 14 : 24, width: "100%" },
+      projGridStyle: m
+        ? { listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 14 }
+        : { listStyle: "none", margin: 0, padding: 0, display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 24 },
+      /* light dtv surface behind the screenshot, no divider line: it flows straight into the text */
+      projPreviewStyle: { position: "relative", aspectRatio: "16 / 10", overflow: "hidden", backgroundColor: "var(--surface-sunken)" },
+      projBodyStyle: { display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 12, flex: 1, padding: m ? "20px 22px 24px 22px" : "26px 28px 28px 28px" },
+      projTitleStyle: { fontFamily: serif, fontWeight: 400, fontSize: m ? 21 : 21, lineHeight: 1.2, color: strong, margin: 0 }, /* 21px: "Ausgaben-App mit AI-Bon-Erfassung" stays on one line at 1440px, so all three cards line up */
+      projOneLinerStyle: { fontFamily: body, fontWeight: 400, fontSize: m ? 16 : 16.5, lineHeight: 1.5, color: strong, margin: 0 },
+      projBulletsStyle: { listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 8 },
+      projBulletStyle: { position: "relative", paddingLeft: 18, fontFamily: body, fontWeight: 300, fontSize: 15.5, lineHeight: 1.55, color: strong },
+      cardStretchBtnStyle: {
+        appearance: "none", background: "none", border: 0, padding: 0, margin: 0,
+        font: "inherit", color: "inherit", letterSpacing: "inherit", textAlign: "left", cursor: "pointer",
+      },
+      /* "Screenshots ansehen": tracked uppercase in dtv blue, like the dtv tile buttons */
+      aiHintStyle: { marginTop: "auto", paddingTop: 8, fontFamily: body, fontWeight: 500, fontSize: 13.5, letterSpacing: "0.12em", textTransform: "uppercase", lineHeight: 1.4, color: accent },
+      duoGridStyle: m
+        ? { listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 14 }
+        : { listStyle: "none", margin: 0, padding: 0, display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 24 },
+      duoCardStyle: {
+        position: "relative", display: "flex", flexDirection: "column", minWidth: 0, overflow: "hidden", cursor: "pointer",
+        backgroundColor: "var(--white)", border: "1px solid var(--border-subtle)",
+      },
+      duoPreviewStyle: { position: "relative", aspectRatio: "16 / 9", overflow: "hidden", backgroundColor: "var(--surface-sunken)" },
+      duoNoteStyle: { fontFamily: body, fontWeight: 300, fontSize: 15.5, lineHeight: 1.6, color: strong, margin: 0 },
+      moreWrapStyle: { display: "flex", flexDirection: "column", gap: 14, marginTop: m ? 18 : 28 },
+      moreHeadStyle: Object.assign({}, label, { margin: 0 }),
+      moreGridStyle: m
+        ? { listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 10 }
+        : { listStyle: "none", margin: 0, padding: 0, display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gridAutoRows: "1fr", gap: 24 },
+      /* overlay: dark neutral frame with square controls; stage keeps one fixed height so arrows never jump */
+      dlgStyle: {
+        width: m ? "calc(100vw - 16px)" : "min(1240px, calc(100vw - 96px))", maxWidth: "none", maxHeight: "calc(100vh - 24px)",
+        padding: m ? "0 0 14px 0" : "0 0 22px 0", border: 0, borderRadius: 0, backgroundColor: "var(--ink-900)", color: "#ffffff", overflow: "auto",
+      },
+      dlgBarStyle: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, padding: m ? "10px 10px 6px 18px" : "14px 14px 8px 26px" },
+      dlgTitleStyle: { fontFamily: serif, fontWeight: 400, fontSize: m ? 17 : 19, lineHeight: 1.4, color: "#ffffff", margin: 0 },
+      dlgCountStyle: { fontFamily: body, fontWeight: 300, fontSize: m ? 14 : 15, color: "#b9bec2", marginLeft: 8 },
+      dlgCloseStyle: {
+        display: "inline-flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+        width: 40, height: 40, borderRadius: 0, border: 0, cursor: "pointer", backgroundColor: "rgba(255,255,255,0.12)", color: "#ffffff",
+      },
+      dlgStageStyle: { display: "flex", alignItems: "center", gap: m ? 6 : 16, padding: m ? "4px 8px" : "6px 22px", height: stageH, boxSizing: "content-box" },
+      dlgFrameAreaStyle: { flex: 1, minWidth: 0, height: "100%", display: "flex", alignItems: "center", justifyContent: "center" },
+      dlgArrowStyle: {
+        display: "inline-flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+        width: m ? 36 : 46, height: m ? 36 : 46, borderRadius: 0, border: 0, cursor: "pointer", backgroundColor: "rgba(255,255,255,0.12)", color: "#ffffff",
+      },
+      browserBarStyle: { display: "flex", alignItems: "center", gap: 6, height: 30, padding: "0 12px", backgroundColor: "#e2e8ec" },
+      browserDotStyle: { display: "block", width: 9, height: 9, borderRadius: 999, backgroundColor: "#bcc8cf" },
+      dlgCaptionStyle: { fontFamily: body, fontWeight: 300, fontSize: m ? 14 : 15.5, lineHeight: 1.5, color: "#e2e4e6", textAlign: "center", margin: m ? "12px 18px 0 18px" : "16px auto 0 auto", maxWidth: 760, minHeight: "1.5em" },
+      dotsStyle: { display: "flex", justifyContent: "center", gap: 2, marginTop: m ? 6 : 8 },
+      dotBtnStyle: { display: "inline-flex", alignItems: "center", justifyContent: "center", width: 28, height: 28, padding: 0, border: 0, backgroundColor: "transparent", cursor: "pointer" },
 
       /* "Mein Ansatz": label + Georgia headline (second line blue) + three white tiles with thin blue line icons */
       introStyle: {
